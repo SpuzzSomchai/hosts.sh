@@ -96,7 +96,7 @@ echo "hosts done"
 sort -u /tmp/dnsmasq -o /tmp/dnsmasq
 sort -u /tmp/hosts -o /tmp/hosts
 echo sorted
-sed -i 's|^|address=/|;s|$|/#|' /tmp/dnsmasq
+sed -i 's|^address=/||;s|^|address=/|;s|$|/#|' /tmp/dnsmasq
 while IFS= read -r line ; do
 	curl -Ls "$line" >> /tmp/dnsmasq
 done <<< "$dnsmasqlist"

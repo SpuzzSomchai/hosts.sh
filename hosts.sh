@@ -71,21 +71,20 @@ if [ "$1" == "-e" ] ; then
 	while IFS= read -r line ; do
 		ex=$(curl -Ls "$line")
 		echo "$ex" | grep -A1 '<h1 class="main-title">' | tail -n1 | sed 's/^[[:blank:]]\+//'
-		echo "$ex" | grep "Network detection rule" | grep -o "<code>.*</code>" | sed 's/<\/\?code>//g;s/^NC$//;s/\\\././g;s/[[:blank:]]\+\?|[[:blank:]]\+\?/\n/g' | grep "[[:alnum:]]\.[[:alnum:]]" | sed 's/^\.//;s/\\-/-/g;s/^/0.0.0.0 /' >> /tmp/exodus 
+		echo "$ex" | grep "Network detection rule" | grep -o "<code>.*</code>" | sed 's/<\/\?code>//g;s/^NC$//;s/\\\././g;s/[[:blank:]]\+\?|[[:blank:]]\+\?/\n/g' | grep "[[:alnum:]]\.[[:alnum:]]" | sed 's/^\.//;s/\\-/-/g;s/^/0.0.0.0 /' >> /tmp/hosts 
 	done <<< "$exodus"
-	sed -i 's/\\-/-/g;s/\[//g;s/\]//g;s/\*//g' /tmp/exodus
-	sed -i '/^0\.0\.0\.0[[:blank:]]\+\?$/d' /tmp/exodus
-	sort -u /tmp/exodus -o /tmp/exodus
+	sed -i 's/\\-/-/g;s/\[//g;s/\]//g;s/\*//g' /tmp/hosts
+	sed -i '/^0\.0\.0\.0[[:blank:]]\+\?$/d' /tmp/hosts
+	sort -u /tmp/hosts -o /tmp/hosts
 fi
 
 
 
 while IFS= read -r line ; do
 	file=$(curl -s "$line")
-	echo "$file" | grep -v "^#" | grep -Po '^[a-z0-9-]+([\-\.]{1}[a-z0-9-]+)*\.[a-z-]{2,10}(:[0-9]{1,5})?(\/.*)?' | awk '{print $1}' | grep -v "\-\." >> /tmp/dnsmasq
+	echo "$file" | grep -v "^#" | grep -Po '^(0.0.0.0 |127.0.0.1 )?[a-z0-9-]+([\-\.]{1}[a-z0-9-]+)*\.[a-z-]{2,10}(:[0-9]{1,5})?(\/.*)?' | awk '{print $NF}' | grep -v "\-\." >> /tmp/dnsmasq
 	echo "$file" | grep "^127\.0\.0\.1[[:blank:]]\|0\.0\.0\.0[[:blank:]]" | sed 's/^127\.0\.0\.1/0.0.0.0/' >> /tmp/hosts
-	echo "$file" | grep -v "^#" | grep "^[[:alnum:][:punct:]]\+$" | grep -c "^address=" | sed 's/^/0.0.0.0 /' >> /tmp/hosts
-	echo "$file" | grep -v "^#" | grep -Po '^[a-z0-9-]+([\-\.]{1}[a-z0-9-]+)*\.[a-z-]{2,10}(:[0-9]{1,5})?(\/.*)?' | awk '{print $1}' | sed 's/^/0.0.0.0 /' >> /tmp/hosts
+	echo "$file" | grep -v "^#" | grep -Po '^(0.0.0.0 |127.0.0.1 )?[a-z0-9-]+([\-\.]{1}[a-z0-9-]+)*\.[a-z-]{2,10}(:[0-9]{1,5})?(\/.*)?' | awk '{print $NF}' | sed 's/^/0.0.0.0 /' >> /tmp/hosts
 	echo "$line good"
 done <<< "$list"
 

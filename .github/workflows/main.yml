@@ -32,7 +32,9 @@ jobs:
       - name: GitHub Upload Release Artifacts
   # You may pin to the exact commit or the version.
   # uses: Roang-zero1/github-upload-release-artifacts-action@f0677c0645db8d52dddaee4e83ce2c150f95e8e1
-        uses: Roang-zero1/github-upload-release-artifacts-action@v2.1.0
+      - uses: actions/upload-artifact@v3
         with:
-    # Allows to pass an already created tag, forces update_existing to true.
-          created_tag: hosts # optional, default is 
+          name: my-artifact
+          path: |
+            /tmp/hosts
+            /tmp/dnsmasq

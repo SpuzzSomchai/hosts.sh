@@ -32,7 +32,7 @@ jobs:
       - name: GitHub Upload Release Artifacts
   # You may pin to the exact commit or the version.
   # uses: Roang-zero1/github-upload-release-artifacts-action@f0677c0645db8d52dddaee4e83ce2c150f95e8e1
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: my-artifact
           path: |
